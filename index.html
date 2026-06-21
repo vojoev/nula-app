@@ -84,6 +84,203 @@
   .view{ display: none; }
   .view.active{ display: block; }
 
+  /* Period tabs */
+  .period-tabs{
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .period-tab{
+    flex: 1;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .period-tab.active{
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .period-nav{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .period-arrow{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    color: var(--ink);
+    padding: 0;
+  }
+
+  .period-label{
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* Income/expense type toggle */
+  .type-btn{
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    padding: 10px;
+  }
+
+  .type-btn.active-income{
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .type-btn.active-expense{
+    background: var(--danger-light);
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+
+  select{
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 11px 12px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    outline: none;
+    width: 100%;
+  }
+
+  /* Category pill */
+  .cat-pill{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+
+  .cat-dot{
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Top categories bars */
+  .cat-row{
+    margin-bottom: 14px;
+  }
+
+  .cat-row:last-child{ margin-bottom: 0; }
+
+  .cat-row-head{
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+
+  .cat-row-head .cat-name{
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cat-row-head .cat-amount{
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .cat-bar-bg{
+    height: 8px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .cat-bar-fill{
+    height: 100%;
+    border-radius: 999px;
+  }
+
+  /* Transaction list item */
+  .tx-item{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tx-item:last-child{ border-bottom: none; }
+
+  .tx-icon{
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .tx-info{
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tx-name{
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tx-meta{
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .tx-amount{
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  .tx-amount.income{ color: var(--accent); }
+  .tx-amount.expense{ color: var(--danger); }
+
+  .tx-del{
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    padding: 4px 6px;
+    flex-shrink: 0;
+  }
+
+  .tx-del:hover{ color: var(--danger); }
+
   /* Summary */
   .summary{
     background: var(--card);
@@ -498,6 +695,7 @@
   <div class="tabs">
     <button class="tab active" data-tab="debts" onclick="switchTab('debts')">Dugovi</button>
     <button class="tab" data-tab="savings" onclick="switchTab('savings')">Štednja</button>
+    <button class="tab" data-tab="finances" onclick="switchTab('finances')">Finansije</button>
   </div>
 
   <!-- DEBTS VIEW -->
@@ -568,6 +766,64 @@
     <div class="items" id="savList"></div>
   </div>
 
+  <!-- FINANCES VIEW -->
+  <div class="view" id="view-finances">
+
+    <div class="period-tabs">
+      <button class="period-tab active" data-period="day" onclick="switchPeriod('day')">Dan</button>
+      <button class="period-tab" data-period="month" onclick="switchPeriod('month')">Mesec</button>
+      <button class="period-tab" data-period="year" onclick="switchPeriod('year')">Godina</button>
+    </div>
+
+    <div class="period-nav">
+      <button type="button" class="period-arrow" data-action="period-prev">‹</button>
+      <div class="period-label" id="periodLabel">—</div>
+      <button type="button" class="period-arrow" data-action="period-next">›</button>
+    </div>
+
+    <div class="summary">
+      <div class="stat paid">
+        <div class="label">Prihod</div>
+        <div class="value" id="finIncome">0,00 €</div>
+      </div>
+      <div class="stat total">
+        <div class="label">Rashod</div>
+        <div class="value" id="finExpense">0,00 €</div>
+      </div>
+      <div class="stat">
+        <div class="label">Bilans</div>
+        <div class="value" id="finBalance">0,00 €</div>
+      </div>
+    </div>
+
+    <div class="add-card">
+      <h2>Nova transakcija</h2>
+      <div style="display:flex; gap:8px; margin-bottom:10px;">
+        <button type="button" id="typeIncomeBtn" class="type-btn active-income" data-action="set-type" data-type="income">Prihod</button>
+        <button type="button" id="typeExpenseBtn" class="type-btn" data-action="set-type" data-type="expense">Rashod</button>
+      </div>
+      <div class="add-form" style="grid-template-columns: 1fr 1fr;">
+        <input type="text" id="newTxName" placeholder="Naziv (npr. Plata, Gorivo)">
+        <input type="number" id="newTxAmount" placeholder="Iznos (€)" step="0.01" min="0">
+      </div>
+      <div class="add-form" style="grid-template-columns: 1fr 1fr; margin-top:10px;">
+        <select id="newTxCategory"></select>
+        <input type="date" id="newTxDate">
+      </div>
+      <button type="button" class="btn-primary" style="width:100%; margin-top:10px;" data-action="add-tx">Dodaj transakciju</button>
+    </div>
+
+    <div class="add-card">
+      <h2>Top kategorije (izabrani period)</h2>
+      <div id="topCategories"></div>
+    </div>
+
+    <div class="add-card">
+      <h2>Transakcije</h2>
+      <div class="items" id="txList"></div>
+    </div>
+  </div>
+
   <div class="add-card" style="margin-top: 20px;">
     <h2>Backup podataka</h2>
     <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.5;">
@@ -606,6 +862,29 @@
 <script>
 const DEBTS_KEY = 'nulla_dugovi_v1';
 const PIN_KEY = 'nulla_pin_v1';
+const TX_KEY = 'nulla_transakcije_v1';
+
+const CATEGORIES = [
+  { id: 'plata', name: 'Plata', color: '#146C5B', icon: '💼', type: 'income' },
+  { id: 'ostali-prihod', name: 'Ostali prihod', color: '#2E9E6E', icon: '➕', type: 'income' },
+  { id: 'hrana', name: 'Hrana', color: '#E07A3F', icon: '🛒', type: 'expense' },
+  { id: 'gorivo', name: 'Gorivo', color: '#9B4FBE', icon: '⛽', type: 'expense' },
+  { id: 'racuni', name: 'Računi', color: '#3F7AE0', icon: '🧾', type: 'expense' },
+  { id: 'kucni-troskovi', name: 'Kućni troškovi', color: '#D6A23B', icon: '🏠', type: 'expense' },
+  { id: 'rata-kredit', name: 'Rata kredita', color: '#3FAFA0', icon: '🏦', type: 'expense' },
+  { id: 'zabava', name: 'Zabava', color: '#D6477A', icon: '🎉', type: 'expense' },
+  { id: 'zdravlje', name: 'Zdravlje', color: '#4FA8D8', icon: '💊', type: 'expense' },
+  { id: 'ostalo', name: 'Ostalo', color: '#7A8794', icon: '📦', type: 'expense' }
+];
+
+let currentTxType = 'income';
+let currentPeriod = 'day';
+let periodOffset = 0; // 0 = today/this month/this year, -1 = previous, etc.
+
+function getCategory(id){
+  return CATEGORIES.find(c => c.id === id) || CATEGORIES[CATEGORIES.length - 1];
+}
+
 const SAVINGS_KEY = 'nulla_stednja_v1';
 
 function load(key){
@@ -966,14 +1245,189 @@ function renderSavings(){
   document.getElementById('savPct').textContent = overallPct.toFixed(1) + '% sakupljeno';
 }
 
-/* ===================== BACKUP ===================== */
+/* ===================== FINANCES ===================== */
+
+function populateCategorySelect(){
+  const sel = document.getElementById('newTxCategory');
+  const filtered = CATEGORIES.filter(c => c.type === currentTxType);
+  sel.innerHTML = filtered.map(c => '<option value="' + c.id + '">' + c.icon + ' ' + c.name + '</option>').join('');
+
+  const dateInput = document.getElementById('newTxDate');
+  if(dateInput && !dateInput.value){
+    dateInput.value = new Date().toISOString().slice(0,10);
+  }
+}
+
+function setTxType(type){
+  currentTxType = type;
+  const incomeBtn = document.getElementById('typeIncomeBtn');
+  const expenseBtn = document.getElementById('typeExpenseBtn');
+  incomeBtn.classList.toggle('active-income', type === 'income');
+  expenseBtn.classList.toggle('active-expense', type === 'expense');
+  populateCategorySelect();
+}
+
+function addTransaction(){
+  const name = document.getElementById('newTxName').value.trim();
+  const amount = parseFloat(document.getElementById('newTxAmount').value);
+  const category = document.getElementById('newTxCategory').value;
+  let date = document.getElementById('newTxDate').value;
+
+  if(!name || isNaN(amount) || amount <= 0){
+    alert('Unesi naziv i ispravan iznos.');
+    return;
+  }
+  if(!date){
+    date = new Date().toISOString().slice(0,10);
+  }
+
+  const txs = load(TX_KEY);
+  txs.unshift({
+    id: 't' + Date.now().toString(),
+    name: name,
+    amount: amount,
+    type: currentTxType,
+    category: category,
+    date: date
+  });
+  save(TX_KEY, txs);
+
+  document.getElementById('newTxName').value = '';
+  document.getElementById('newTxAmount').value = '';
+  document.getElementById('newTxDate').value = '';
+
+  renderFinances();
+}
+
+function removeTransaction(id){
+  if(!confirm('Obrisati ovu transakciju?')) return;
+  let txs = load(TX_KEY);
+  txs = txs.filter(t => t.id !== id);
+  save(TX_KEY, txs);
+  renderFinances();
+}
+
+function switchPeriod(period){
+  currentPeriod = period;
+  periodOffset = 0;
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.toggle('active', t.dataset.period === period));
+  renderFinances();
+}
+
+function shiftPeriod(dir){
+  periodOffset += dir;
+  renderFinances();
+}
+
+function getPeriodRange(){
+  const now = new Date();
+  let start, end, label;
+
+  if(currentPeriod === 'day'){
+    const d = new Date(now);
+    d.setDate(d.getDate() + periodOffset);
+    start = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    end = new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59);
+    const dayNames = ['Nedelja','Ponedeljak','Utorak','Sreda','Četvrtak','Petak','Subota'];
+    label = (periodOffset === 0 ? 'Danas, ' : '') + d.getDate() + '.' + (d.getMonth()+1) + '.' + d.getFullYear() + '.';
+  } else if(currentPeriod === 'month'){
+    const d = new Date(now.getFullYear(), now.getMonth() + periodOffset, 1);
+    start = new Date(d.getFullYear(), d.getMonth(), 1);
+    end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+    const monthNames = ['Januar','Februar','Mart','April','Maj','Jun','Jul','Avgust','Septembar','Oktobar','Novembar','Decembar'];
+    label = monthNames[d.getMonth()] + ' ' + d.getFullYear() + '.';
+  } else {
+    const year = now.getFullYear() + periodOffset;
+    start = new Date(year, 0, 1);
+    end = new Date(year, 11, 31, 23, 59, 59);
+    label = String(year);
+  }
+
+  return { start, end, label };
+}
+
+function renderFinances(){
+  populateCategorySelect();
+
+  const { start, end, label } = getPeriodRange();
+  document.getElementById('periodLabel').textContent = label;
+
+  const allTxs = load(TX_KEY);
+  const txs = allTxs.filter(t => {
+    const d = new Date(t.date + 'T12:00:00');
+    return d >= start && d <= end;
+  }).sort((a,b) => new Date(b.date) - new Date(a.date));
+
+  let income = 0, expense = 0;
+  const catTotals = {};
+
+  txs.forEach(t => {
+    if(t.type === 'income') income += t.amount;
+    else expense += t.amount;
+
+    if(!catTotals[t.category]) catTotals[t.category] = 0;
+    catTotals[t.category] += t.amount;
+  });
+
+  document.getElementById('finIncome').textContent = fmt(income);
+  document.getElementById('finExpense').textContent = fmt(expense);
+  const balanceEl = document.getElementById('finBalance');
+  const balance = income - expense;
+  balanceEl.textContent = fmt(balance);
+  balanceEl.style.color = balance >= 0 ? 'var(--accent)' : 'var(--danger)';
+
+  // Top categories
+  const topCatEl = document.getElementById('topCategories');
+  const sortedCats = Object.entries(catTotals).sort((a,b) => b[1] - a[1]);
+  const maxCatAmount = sortedCats.length > 0 ? sortedCats[0][1] : 0;
+
+  if(sortedCats.length === 0){
+    topCatEl.innerHTML = '<p style="font-size:13px; color:var(--muted);">Nema transakcija u ovom periodu.</p>';
+  } else {
+    topCatEl.innerHTML = sortedCats.map(([catId, amount]) => {
+      const cat = getCategory(catId);
+      const pct = maxCatAmount > 0 ? (amount / maxCatAmount) * 100 : 0;
+      return '<div class="cat-row">' +
+        '<div class="cat-row-head">' +
+          '<span class="cat-name"><span class="cat-dot" style="background:' + cat.color + '"></span>' + cat.icon + ' ' + escapeHtml(cat.name) + '</span>' +
+          '<span class="cat-amount">' + fmt(amount) + '</span>' +
+        '</div>' +
+        '<div class="cat-bar-bg"><div class="cat-bar-fill" style="width:' + pct + '%; background:' + cat.color + '"></div></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Transaction list
+  const txListEl = document.getElementById('txList');
+  if(txs.length === 0){
+    txListEl.innerHTML = '<div class="empty">Nema transakcija u ovom periodu.</div>';
+  } else {
+    txListEl.innerHTML = txs.map(t => {
+      const cat = getCategory(t.category);
+      const dateObj = new Date(t.date + 'T12:00:00');
+      const dateStr = dateObj.getDate() + '.' + (dateObj.getMonth()+1) + '.' + dateObj.getFullYear() + '.';
+      return '<div class="tx-item">' +
+        '<div class="tx-icon" style="background:' + cat.color + '22;">' + cat.icon + '</div>' +
+        '<div class="tx-info">' +
+          '<div class="tx-name">' + escapeHtml(t.name) + '</div>' +
+          '<div class="tx-meta">' + escapeHtml(cat.name) + ' · ' + dateStr + '</div>' +
+        '</div>' +
+        '<div class="tx-amount ' + t.type + '">' + (t.type === 'income' ? '+' : '−') + fmt(t.amount) + '</div>' +
+        '<button type="button" class="tx-del" data-action="remove-tx" data-id="' + t.id + '">✕</button>' +
+      '</div>';
+    }).join('');
+  }
+}
+
+
 
 function exportData(){
   const data = {
     app: 'Nulla',
     exportedAt: new Date().toISOString(),
     debts: load(DEBTS_KEY),
-    savings: load(SAVINGS_KEY)
+    savings: load(SAVINGS_KEY),
+    transactions: load(TX_KEY)
   };
   const json = JSON.stringify(data, null, 2);
   const dateStr = new Date().toISOString().slice(0,10);
@@ -1038,14 +1492,15 @@ function handleImportFile(file){
 }
 
 function applyImportedData(data){
-  if(!data.debts && !data.savings){
+  if(!data.debts && !data.savings && !data.transactions){
     alert('Ovo ne izgleda kao Nulla backup fajl.');
     return;
   }
 
   const existingDebts = load(DEBTS_KEY);
   const existingSavings = load(SAVINGS_KEY);
-  const hasExisting = existingDebts.length > 0 || existingSavings.length > 0;
+  const existingTx = load(TX_KEY);
+  const hasExisting = existingDebts.length > 0 || existingSavings.length > 0 || existingTx.length > 0;
 
   let mode = 'replace';
   if(hasExisting){
@@ -1056,13 +1511,16 @@ function applyImportedData(data){
   if(mode === 'replace'){
     save(DEBTS_KEY, data.debts || []);
     save(SAVINGS_KEY, data.savings || []);
+    save(TX_KEY, data.transactions || []);
   } else {
     save(DEBTS_KEY, existingDebts.concat(data.debts || []));
     save(SAVINGS_KEY, existingSavings.concat(data.savings || []));
+    save(TX_KEY, existingTx.concat(data.transactions || []));
   }
 
   renderDebts();
   renderSavings();
+  renderFinances();
   alert('Backup učitan.');
 }
 
@@ -1109,6 +1567,11 @@ document.addEventListener('click', function(e){
     case 'copy-backup': copyBackupText(); break;
     case 'import-from-text': importFromText(); break;
     case 'change-pin': changePin(); break;
+    case 'set-type': setTxType(btn.dataset.type); break;
+    case 'add-tx': addTransaction(); break;
+    case 'remove-tx': removeTransaction(id); break;
+    case 'period-prev': shiftPeriod(-1); break;
+    case 'period-next': shiftPeriod(1); break;
   }
 });
 
@@ -1177,6 +1640,7 @@ function initLock(){
     app.classList.add('unlocked');
     renderDebts();
     renderSavings();
+    renderFinances();
   }
 
   submit.addEventListener('click', tryUnlock);
