@@ -824,45 +824,172 @@
     </div>
   </div>
 
-  <div class="add-card" style="margin-top: 20px;">
-    <h2>Backup podataka</h2>
-    <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.5;">
-      Sačuvaj fajl sa svim podacima na telefon — brisanje keša browsera ga ne briše.
-      Po potrebi ga učitaj nazad.
-    </p>
-    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-      <button type="button" class="btn-primary" data-action="export-data">Sačuvaj backup (.json)</button>
-      <button type="button" id="importBtn" data-action="import-data">Učitaj backup</button>
-      <button type="button" data-action="change-pin" style="background:var(--line); color:var(--ink);">Promeni PIN</button>
-      <input type="file" id="importFile" accept="application/json" style="display:none;">
+  <footer>
+    <button type="button" data-action="open-settings" style="background:var(--card); border:1px solid var(--line); color:var(--muted); font-size:13px; padding:10px 20px; border-radius:10px; margin-top:10px;">⚙️ Podešavanja</button>
+  </footer>
+
+</div>
+
+<!-- SETTINGS OVERLAY -->
+<div id="settingsOverlay" style="display:none; position:fixed; inset:0; background:var(--bg); z-index:500; overflow-y:auto; padding:24px 16px 60px;">
+  <div style="max-width:760px; margin:0 auto;">
+
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+      <button type="button" data-action="close-settings" style="background:var(--card); border:1px solid var(--line); color:var(--ink); width:38px; height:38px; border-radius:10px; font-size:18px; padding:0;">‹</button>
+      <h2 style="font-size:20px; font-weight:800;">Podešavanja</h2>
     </div>
 
-    <div id="backupOutput" style="display:none; margin-top:16px;">
-      <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">
-        Ako se fajl nije sam preuzeo: kopiraj tekst ispod (dugme), nalepi ga u Notes/Beleške ili email,
-        i sačuvaj kao <strong id="backupFilename"></strong>
+    <div class="add-card">
+      <h2>☁️ Cloud Sync</h2>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.5;">
+        Podaci se automatski šalju na cloud nakon svake promjene. Koristi Cloud ID za pristup sa drugog uređaja.
       </p>
-      <textarea id="backupTextarea" readonly style="width:100%; height:120px; font-family:monospace; font-size:11px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--bg); resize:vertical;"></textarea>
-      <button type="button" data-action="copy-backup" style="margin-top:8px; background:var(--accent-light); color:var(--accent);">Kopiraj tekst</button>
+      <div id="cloudIdBox" style="background:var(--bg); border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:12px; font-size:12px; color:var(--muted); word-break:break-all;">
+        <span style="font-weight:600; color:var(--ink);">Tvoj Cloud ID:</span><br>
+        <span id="cloudIdDisplay">—</span>
+      </div>
+      <div id="cloudStatus" style="margin-bottom:12px; font-size:12px; color:var(--muted); min-height:16px;"></div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:12px;">
+        <button type="button" class="btn-primary" data-action="cloud-push">⬆ Pošalji na cloud</button>
+        <button type="button" style="background:var(--accent-light); color:var(--accent);" data-action="cloud-pull">⬇ Povuci sa clouda</button>
+      </div>
+      <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">Povuci podatke sa drugog uređaja unosom Cloud ID-a:</p>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="importCloudId" placeholder="Unesi Cloud ID..." style="flex:1; font-size:12px;">
+        <button type="button" style="background:var(--gold-light); color:var(--gold); white-space:nowrap;" data-action="cloud-pull-id">Povuci</button>
+      </div>
     </div>
 
-    <div style="margin-top:16px;">
-      <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">
-        Ili nalepi sačuvani backup tekst ovde i klikni "Učitaj iz teksta":
+    <div class="add-card" style="margin-top:14px;">
+      <h2>💾 Lokalni backup</h2>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.5;">
+        Sačuvaj fajl sa svim podacima na telefon — nezavisno od cloud-a i keša browsera.
       </p>
-      <textarea id="importTextarea" placeholder="Nalepi JSON backup ovde..." style="width:100%; height:100px; font-family:monospace; font-size:11px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--bg); resize:vertical;"></textarea>
-      <button type="button" data-action="import-from-text" style="margin-top:8px; background:var(--gold-light); color:var(--gold);">Učitaj iz teksta</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button type="button" class="btn-primary" data-action="export-data">Sačuvaj backup (.json)</button>
+        <button type="button" id="importBtn" data-action="import-data">Učitaj backup</button>
+        <input type="file" id="importFile" accept="application/json" style="display:none;">
+      </div>
+
+      <div id="backupOutput" style="display:none; margin-top:16px;">
+        <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">
+          Ako se fajl nije preuzeo — kopiraj tekst ispod i sačuvaj kao <strong id="backupFilename"></strong>
+        </p>
+        <textarea id="backupTextarea" readonly style="width:100%; height:120px; font-family:monospace; font-size:11px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--bg); resize:vertical;"></textarea>
+        <button type="button" data-action="copy-backup" style="margin-top:8px; background:var(--accent-light); color:var(--accent);">Kopiraj tekst</button>
+      </div>
+
+      <div style="margin-top:14px;">
+        <p style="font-size:12px; color:var(--muted); margin-bottom:8px;">Ili nalepi sačuvani backup tekst ovdje:</p>
+        <textarea id="importTextarea" placeholder="Nalepi JSON backup ovdje..." style="width:100%; height:100px; font-family:monospace; font-size:11px; padding:10px; border:1px solid var(--line); border-radius:10px; background:var(--bg); resize:vertical;"></textarea>
+        <button type="button" data-action="import-from-text" style="margin-top:8px; background:var(--gold-light); color:var(--gold);">Učitaj iz teksta</button>
+      </div>
     </div>
+
+    <div class="add-card" style="margin-top:14px;">
+      <h2>🔐 Sigurnost</h2>
+      <button type="button" data-action="change-pin" style="background:var(--line); color:var(--ink);">Promijeni PIN</button>
+    </div>
+
   </div>
-
-  <footer>Podaci se čuvaju u localStorage ovog browsera — preporuka je da redovno praviš backup.</footer>
-
 </div>
 
 <script>
 const DEBTS_KEY = 'nulla_dugovi_v1';
 const PIN_KEY = 'nulla_pin_v1';
 const TX_KEY = 'nulla_transakcije_v1';
+const CLOUD_ID_KEY = 'nulla_cloud_uid';
+
+const SUPABASE_URL = 'https://gtzewqibuujqplmqyifd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd0emV3cWlidXVqcXBsbXF5aWZkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIyNTk2ODUsImV4cCI6MjA5NzgzNTY4NX0.ADg4xzpLmHeh69LqrrXDLwpKGo7rDv77tAg4epuSr3s';
+
+function getOrCreateCloudId(){
+  let uid = localStorage.getItem(CLOUD_ID_KEY);
+  if(!uid){
+    uid = 'nulla-' + Math.random().toString(36).slice(2,10) + '-' + Math.random().toString(36).slice(2,10);
+    localStorage.setItem(CLOUD_ID_KEY, uid);
+  }
+  return uid;
+}
+
+function initCloudId(){
+  const uid = getOrCreateCloudId();
+  const el = document.getElementById('cloudIdDisplay');
+  if(el) el.textContent = uid;
+}
+
+function cloudStatus(msg, isError){
+  const el = document.getElementById('cloudStatus');
+  if(!el) return;
+  el.textContent = msg;
+  el.style.color = isError ? 'var(--danger)' : 'var(--accent)';
+}
+
+async function cloudPush(){
+  cloudStatus('Šaljem podatke na cloud...');
+  await cloudPushSilent();
+}
+
+async function cloudPull(uid){
+  if(!uid) uid = getOrCreateCloudId();
+  cloudStatus('Povlačim podatke sa clouda...');
+
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/nulla_data?uid=eq.' + encodeURIComponent(uid) + '&select=data,updated_at', {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      }
+    });
+
+    if(!res.ok){
+      cloudStatus('Greška: ' + res.status, true);
+      return;
+    }
+
+    const rows = await res.json();
+    if(!rows || rows.length === 0){
+      cloudStatus('Nema podataka na cloudu za ovaj Cloud ID.', true);
+      return;
+    }
+
+    const data = rows[0].data;
+    const savedAt = rows[0].updated_at ? new Date(rows[0].updated_at).toLocaleString('sr-RS') : '?';
+
+    const ok = confirm('Pronađeni podaci sa ' + savedAt + '.\n\nZamijeniš li lokalne podatke sa cloud verzijom?');
+    if(!ok) return;
+
+    if(uid !== getOrCreateCloudId()){
+      localStorage.setItem(CLOUD_ID_KEY, uid);
+      document.getElementById('cloudIdDisplay').textContent = uid;
+    }
+
+    save(DEBTS_KEY, data.debts || []);
+    save(SAVINGS_KEY, data.savings || []);
+    save(TX_KEY, data.transactions || []);
+
+    renderDebts();
+    renderSavings();
+    renderFinances();
+
+    cloudStatus('✓ Podaci učitani sa clouda — ' + savedAt);
+  }catch(e){
+    cloudStatus('Greška pri povlačenju: ' + e.message, true);
+  }
+}
+
+async function cloudPullFromId(){
+  const input = document.getElementById('importCloudId');
+  const uid = input.value.trim();
+  if(!uid){
+    cloudStatus('Unesi Cloud ID.', true);
+    return;
+  }
+  await cloudPull(uid);
+  input.value = '';
+}
+
+
 
 const CATEGORIES = [
   { id: 'plata', name: 'Plata', color: '#146C5B', icon: '💼', type: 'income' },
@@ -892,8 +1019,58 @@ function load(key){
     return JSON.parse(localStorage.getItem(key)) || [];
   }catch(e){ return []; }
 }
+
+let autoSyncTimer = null;
+
 function save(key, data){
   localStorage.setItem(key, JSON.stringify(data));
+  // Auto-sync na cloud — debounced 1.5s da se ne šalje previše
+  if(key === DEBTS_KEY || key === SAVINGS_KEY || key === TX_KEY){
+    clearTimeout(autoSyncTimer);
+    autoSyncTimer = setTimeout(() => {
+      cloudPushSilent();
+    }, 1500);
+  }
+}
+
+async function cloudPushSilent(){
+  const uid = getOrCreateCloudId();
+  const data = {
+    debts: load(DEBTS_KEY),
+    savings: load(SAVINGS_KEY),
+    transactions: load(TX_KEY),
+    savedAt: new Date().toISOString()
+  };
+
+  try{
+    const res = await fetch(SUPABASE_URL + '/rest/v1/nulla_data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ uid: uid, data: data, updated_at: new Date().toISOString() })
+    });
+
+    const statusEl = document.getElementById('cloudStatus');
+    if(statusEl){
+      if(res.ok || res.status === 201 || res.status === 200){
+        statusEl.textContent = '✓ Synced — ' + new Date().toLocaleTimeString('sr-RS');
+        statusEl.style.color = 'var(--accent)';
+      } else {
+        statusEl.textContent = '⚠ Sync greška ' + res.status;
+        statusEl.style.color = 'var(--danger)';
+      }
+    }
+  }catch(e){
+    const statusEl = document.getElementById('cloudStatus');
+    if(statusEl){
+      statusEl.textContent = '⚠ Offline — podaci čuvaju se lokalno';
+      statusEl.style.color = 'var(--muted)';
+    }
+  }
 }
 
 function fmt(n){
@@ -1567,6 +1744,16 @@ document.addEventListener('click', function(e){
     case 'copy-backup': copyBackupText(); break;
     case 'import-from-text': importFromText(); break;
     case 'change-pin': changePin(); break;
+    case 'cloud-push': cloudPush(); break;
+    case 'cloud-pull': cloudPull(); break;
+    case 'cloud-pull-id': cloudPullFromId(); break;
+    case 'open-settings':
+      document.getElementById('settingsOverlay').style.display = 'block';
+      initCloudId();
+      break;
+    case 'close-settings':
+      document.getElementById('settingsOverlay').style.display = 'none';
+      break;
     case 'set-type': setTxType(btn.dataset.type); break;
     case 'add-tx': addTransaction(); break;
     case 'remove-tx': removeTransaction(id); break;
@@ -1641,6 +1828,7 @@ function initLock(){
     renderDebts();
     renderSavings();
     renderFinances();
+    initCloudId();
   }
 
   submit.addEventListener('click', tryUnlock);
